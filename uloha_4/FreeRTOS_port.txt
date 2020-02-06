@@ -1,0 +1,29 @@
+FreeRTOS kernel se sklada ze tri (ctyr, pokud jsou pouzity co-routines) souboru, ktere jsou stejne pro kazdy port: list.c, queue.c a tasks.c (croutine.c).
+
+Tyto soubory jsou obsazeny v adresari FreeRTOS/Source
+
+1. Vytvorime adresar FreeRTOS/Source/Portable/[kompilator]/[jmenoprocesoru] kde budou soubory specificke pro danou architekturu a kompilator.
+
+2. Do adresare, ktery jsme si vytvorili zkopirujeme port.c a portmacro.h, ktere budou obsahovat jenom hlavicky funkci a makra, ktere bude potreba implementovat.
+
+V souboru portmacro.h je potreba definovat veci tykajici se architektury:
+	#define portSTACK_GROWTH //zvolime -1, pokud se bude stack bude cislovat od nejvyssi k nejnizsi adrese a nebo 1, pokud tomu bude naopak.
+
+V pripade architektury RISC-V zvolime -1.
+
+
+3. Dale vytvorime adresar demo aplikace FreeRTOS/Demo/[kompilator] abychom overili funkcnost
+a zkopirujeme do nej soubroy main.c a FreeRTOSConfig.h.
+V souboru FreeRTOSConfig.h bude treba zmenit, napriklad:
+
+	podle: http://www.freertos.org/a00110.html
+
+	/* Interrupt nesting behaviour configuration. */
+	#define configKERNEL_INTERRUPT_PRIORITY         [dependent of processor]
+	#define configMAX_SYSCALL_INTERRUPT_PRIORITY    [dependent on processor and application]
+	#define configMAX_API_CALL_INTERRUPT_PRIORITY   [dependent on processor and application]
+
+4. FreeRTOS doporucuje vytvorit demo, ktere overi funkcnost blikani LED, podle nejakeho casovace.
+To take zavisi na desce, kterou pouzivate.
+
+http://www.freertos.org/porting-a-freertos-demo-to-different-hardware.html
